@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6f5f2">
+<title>Amigo Invisible</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f5f2; --card:#ffffff; --ink:#18181b; --mut:#71717a; --line:#e7e5e4;
+    --acc:#5b5bd6; --acc-soft:#eeeefc; --ok:#16a34a; --wa:#25d366; --r:20px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{
+    font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    background:var(--bg); color:var(--ink); min-height:100vh;
+    display:flex; justify-content:center; padding:32px 16px 48px;
+  }
+  .wrap{width:100%;max-width:440px}
+  header{text-align:center;margin-bottom:28px}
+  .logo{width:56px;height:56px;border-radius:16px;background:var(--acc);display:grid;place-items:center;margin:0 auto 14px;box-shadow:0 8px 24px #5b5bd640}
+  .logo svg{width:28px;height:28px}
+  h1{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;margin:0}
+  .sub{color:var(--mut);margin:6px 0 0;font-size:.98rem}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;margin-bottom:14px;box-shadow:0 1px 2px #0000000a,0 8px 24px #0000000a;animation:in .35s ease both}
+  @keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .step{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.02rem;margin-bottom:14px}
+  .num{width:26px;height:26px;border-radius:50%;background:var(--acc-soft);color:var(--acc);display:grid;place-items:center;font-size:.85rem;font-weight:700;flex-shrink:0}
+
+  input{width:100%;padding:14px 16px;border-radius:14px;border:1.5px solid var(--line);background:#fafaf9;color:var(--ink);font:inherit;font-size:1rem;outline:none;transition:.15s}
+  input:focus{border-color:var(--acc);background:#fff;box-shadow:0 0 0 4px var(--acc-soft)}
+  input::placeholder{color:#a8a29e}
+  .field + .field{margin-top:10px}
+  .row{display:flex;gap:8px}
+  .row input{flex:1}
+
+  button{font:inherit;border:0;cursor:pointer;transition:transform .1s,opacity .15s,background .15s}
+  button:active{transform:scale(.97)}
+  .btn{width:100%;padding:16px;border-radius:14px;font-size:1.02rem;font-weight:600;background:var(--acc);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px}
+  .btn:disabled{background:#d6d3d1;cursor:not-allowed;transform:none}
+  .btn.ghost{background:transparent;color:var(--mut);font-weight:500;padding:12px}
+  .btn.light{background:var(--acc-soft);color:var(--acc)}
+  .btn.wa{background:var(--wa);color:#fff}
+  .btn + .btn{margin-top:10px}
+  .add{width:52px;border-radius:14px;background:var(--acc);color:#fff;font-size:1.5rem;font-weight:400;flex-shrink:0}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .chip{display:flex;align-items:center;gap:6px;background:var(--acc-soft);color:var(--acc);padding:8px 8px 8px 14px;border-radius:999px;font-weight:600;font-size:.93rem;animation:in .2s ease both}
+  .chip button{width:22px;height:22px;border-radius:50%;background:#5b5bd622;color:var(--acc);font-size:.9rem;line-height:1;display:grid;place-items:center}
+  .hint{font-size:.85rem;color:var(--mut);margin:12px 0 0;text-align:center}
+  .count{font-size:.85rem;color:var(--mut);font-weight:500;margin-left:auto}
+
+  .names{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .names button{padding:16px 10px;border-radius:14px;background:#fafaf9;border:1.5px solid var(--line);font-weight:600;font-size:1rem;color:var(--ink);word-break:break-word}
+  .names button:hover{border-color:var(--acc);background:#fff}
+
+  .center{text-align:center}
+  .avatar{width:72px;height:72px;border-radius:50%;background:var(--acc-soft);color:var(--acc);display:grid;place-items:center;font-size:1.8rem;font-weight:800;margin:4px auto 14px}
+  .reveal{position:relative;margin:18px 0 8px;border-radius:18px;background:linear-gradient(135deg,#5b5bd6,#8b5cf6);color:#fff;padding:34px 16px;cursor:pointer;overflow:hidden;user-select:none}
+  .reveal .tap{font-weight:600;opacity:.95}
+  .reveal .tap small{display:block;font-weight:400;opacity:.75;margin-top:4px}
+  .label{color:var(--mut);font-size:.9rem;margin:0}
+  .target{font-size:2.4rem;font-weight:800;letter-spacing:-.02em;margin:6px 0 4px;word-break:break-word;animation:pop .45s cubic-bezier(.2,1.4,.4,1) both}
+  @keyframes pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+  .pill{display:inline-block;margin-top:10px;padding:6px 14px;border-radius:999px;background:#f5f5f4;color:var(--mut);font-size:.88rem;font-weight:500}
+  .success{width:56px;height:56px;border-radius:50%;background:#dcfce7;color:var(--ok);display:grid;place-items:center;margin:0 auto 12px}
+  .hidden{display:none!important}
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;font-size:.92rem;font-weight:500;opacity:0;pointer-events:none;transition:.25s}
+  .toast.show{opacity:1;bottom:36px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>
+    </div>
+    <h1 id="title">Amigo Invisible</h1>
+    <p class="sub" id="subtitle">Organiza el sorteo en 1 minuto</p>
+  </header>
+
+  <!-- ===== CREADOR ===== -->
+  <section id="creator">
+    <div class="card">
+      <div class="step"><span class="num">1</span>Datos del sorteo</div>
+      <div class="field"><input id="evName" placeholder="Nombre (ej: Cena de amigos)" maxlength="50"></div>
+      <div class="field"><input id="budget" placeholder="Presupuesto (opcional, ej: 20 €)" maxlength="30"></div>
+    </div>
+
+    <div class="card">
+      <div class="step"><span class="num">2</span>Participantes <span class="count" id="count"></span></div>
+      <div class="row">
+        <input id="name" placeholder="Escribe un nombre" maxlength="40" enterkeyhint="done" autocomplete="off">
+        <button class="add" id="add" aria-label="Añadir">+</button>
+      </div>
+      <div class="chips" id="chips"></div>
+      <p class="hint" id="hint">Añade al menos 3 personas</p>
+    </div>
+
+    <button class="btn" id="draw" disabled>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+      Hacer el sorteo
+    </button>
+  </section>
+
+  <!-- ===== COMPARTIR ===== -->
+  <section id="share" class="hidden">
+    <div class="card center">
+      <div class="success"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+      <div class="step" style="justify-content:center;margin-bottom:6px">¡Sorteo listo!</div>
+      <p class="label" style="margin-bottom:20px">Envía el enlace al grupo. Cada uno elige su nombre y descubre a quién regala. Ni tú sabes los resultados.</p>
+      <button class="btn wa" id="wa">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.2-.6-.4zM12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg>
+        Enviar por WhatsApp
+      </button>
+      <button class="btn light" id="copy">Copiar enlace</button>
+      <button class="btn ghost" id="redo">Repetir sorteo</button>
+    </div>
+  </section>
+
+  <!-- ===== PARTICIPANTE ===== -->
+  <section id="pick" class="hidden">
+    <div class="card">
+      <div class="step"><span class="num">?</span>¿Quién eres?</div>
+      <div class="names" id="names"></div>
+      <p class="hint">Toca tu nombre</p>
+    </div>
+  </section>
+
+  <section id="confirm" class="hidden">
+    <div class="card center">
+      <div class="avatar" id="initial"></div>
+      <div class="step" style="justify-content:center;margin:0">Hola, <span id="me" style="margin-left:5px"></span></div>
+      <div class="reveal" id="reveal">
+        <div class="tap">Toca para descubrir a quién regalas<small>Asegúrate de que nadie mira 👀</small></div>
+      </div>
+      <button class="btn ghost" id="back">No soy yo</button>
+    </div>
+  </section>
+
+  <section id="result" class="hidden">
+    <div class="card center">
+      <p class="label">Te toca regalar a</p>
+      <div class="target" id="target"></div>
+      <span class="pill hidden" id="budgetTxt"></span>
+      <p class="hint" style="margin-top:18px">Guárdalo en secreto 🤫<br>Si vuelves a abrir el enlace, verás esto mismo.</p>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const show = (...ids) => ["creator","share","pick","confirm","result"].forEach(s => $(s).classList.toggle("hidden", !ids.includes(s)));
+const toast = t => { const el=$("toast"); el.textContent=t; el.classList.add("show"); setTimeout(()=>el.classList.remove("show"),1600); };
+const esc = s => s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+// Codificación ligera para que el resultado no se lea en el enlace
+const KEY = "amigo-invisible";
+function enc(obj){
+  const s = unescape(encodeURIComponent(JSON.stringify(obj))); let o="";
+  for (let i=0;i<s.length;i++) o += String.fromCharCode(s.charCodeAt(i) ^ KEY.charCodeAt(i%KEY.length));
+  return btoa(o).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+}
+function dec(str){
+  let b = str.replace(/-/g,"+").replace(/_/g,"/"); while (b.length%4) b+="=";
+  const s = atob(b); let o="";
+  for (let i=0;i<s.length;i++) o += String.fromCharCode(s.charCodeAt(i) ^ KEY.charCodeAt(i%KEY.length));
+  return JSON.parse(decodeURIComponent(escape(o)));
+}
+
+// Sorteo: nadie se toca a sí mismo
+const rnd = n => { const a=new Uint32Array(1); crypto.getRandomValues(a); return a[0]%n; };
+function derangement(n){
+  for(;;){
+    const p=[...Array(n).keys()];
+    for (let i=n-1;i>0;i--){ const j=rnd(i+1); [p[i],p[j]]=[p[j],p[i]]; }
+    if (p.every((v,i)=>v!==i)) return p;
+  }
+}
+
+// ---- Creador ----
+let people = [];
+function render(){
+  $("chips").innerHTML = people.map((p,i)=>`<span class="chip">${esc(p)}<button data-i="${i}" aria-label="Quitar">✕</button></span>`).join("");
+  $("count").textContent = people.length ? people.length + (people.length===1?" persona":" personas") : "";
+  const faltan = 3 - people.length;
+  $("hint").textContent = faltan > 0 ? `Añade ${faltan} más para empezar` : "Puedes pegar varios nombres separados por comas";
+  $("draw").disabled = people.length < 3;
+}
+function add(){
+  const parts = $("name").value.split(/[,\n;]+/).map(s=>s.trim()).filter(Boolean);
+  for (const v of parts){
+    if (people.some(p=>p.toLowerCase()===v.toLowerCase())) { toast(`"${v}" ya está en la lista`); continue; }
+    people.push(v);
+  }
+  $("name").value=""; $("name").focus(); render();
+}
+$("add").onclick = add;
+$("name").onkeydown = e => { if (e.key==="Enter") add(); };
+$("chips").onclick = e => { const b=e.target.closest("button"); if (b){ people.splice(+b.dataset.i,1); render(); } };
+
+let url="";
+function doDraw(){
+  const data = { t:$("evName").value.trim(), b:$("budget").value.trim(), n:people, a:derangement(people.length) };
+  url = location.href.split("#")[0] + "#" + enc(data);
+  const msg = `🎁 *${data.t || "Amigo Invisible"}*\n\nEntra, elige tu nombre y descubre a quién te toca regalar:\n${url}`;
+  $("wa").onclick = () => window.open("https://wa.me/?text="+encodeURIComponent(msg), "_blank");
+  show("share"); window.scrollTo({top:0,behavior:"smooth"});
+}
+$("draw").onclick = doDraw;
+$("redo").onclick = () => { show("creator"); };
+$("copy").onclick = async () => {
+  try { await navigator.clipboard.writeText(url); toast("Enlace copiado"); }
+  catch { prompt("Copia el enlace:", url); }
+};
+
+// ---- Participante ----
+function startPlayer(data){
+  if (data.t){ $("title").textContent = data.t; }
+  $("subtitle").textContent = "Te han invitado al sorteo";
+  $("names").innerHTML = data.n.map((p,i)=>`<button data-i="${i}">${esc(p)}</button>`).join("");
+  const store = "ai_" + location.hash.slice(1,40);
+  let me = null;
+  try { const s = localStorage.getItem(store); if (s!==null && data.n[+s]) me = +s; } catch {}
+  if (me!==null) return reveal(data, me);
+  show("pick");
+  $("names").onclick = e => {
+    const b = e.target.closest("button"); if (!b) return;
+    me = +b.dataset.i;
+    $("me").textContent = data.n[me];
+    $("initial").textContent = data.n[me].charAt(0).toUpperCase();
+    show("confirm");
+  };
+  $("back").onclick = () => show("pick");
+  $("reveal").onclick = () => { try { localStorage.setItem(store, me); } catch {} reveal(data, me); };
+}
+function reveal(data, me){
+  $("target").textContent = data.n[data.a[me]];
+  if (data.b){ $("budgetTxt").textContent = "Presupuesto: " + data.b; $("budgetTxt").classList.remove("hidden"); }
+  show("result");
+}
+
+if (location.hash.length > 1){
+  try { startPlayer(dec(location.hash.slice(1))); }
+  catch { $("subtitle").textContent = "Este enlace no es válido"; }
+}
+render();
+</script>
+</body>
+</html>
